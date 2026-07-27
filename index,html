@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nordeste House - Cliente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        body {
+            background: #f4ede8;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .app-container {
+            max-width: 420px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px 32px 0 0;
+            padding: 24px 20px 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+            margin-top: 10px;
+        }
+        /* Cabeçalho */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            font-size: 22px;
+            color: #8B4513; /* Terracota */
+            letter-spacing: -0.5px;
+        }
+        .header h1 span {
+            color: #1a3a4a; /* Azul petróleo */
+            font-weight: 300;
+        }
+        .badge {
+            background: #1a3a4a;
+            color: #fff;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Cards de Serviço */
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .service-item {
+            background: #f8f4f0;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .service-item.selected {
+            border-color: #8B4513;
+            background: #fff6eb;
+        }
+        .service-info h3 {
+            font-size: 16px;
+            color: #2d1f14;
+        }
+        .service-info p {
+            font-size: 13px;
+            color: #7a6b60;
+        }
+        .service-price {
+            font-weight: 700;
+            color: #8B4513;
+            font-size: 18px;
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #3d2c1e;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0d6ce;
+            border-radius: 14px;
+            font-size: 15px;
+            background: #fcfaf8;
+            transition: 0.2s;
+            appearance: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #8B4513;
+            outline: none;
+            background: #fff;
+        }
+        .row-duo {
+            display: flex;
+            gap: 12px;
+        }
+        .row-duo .form-group {
+            flex: 1;
+        }
+
+        /* Botão */
+        .btn-agendar {
+            width: 100%;
+            padding: 16px;
+            background: #8B4513;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-agendar:active {
+            background: #5e2e0c;
+            transform: scale(0.98);
+        }
+        .btn-agendar:disabled {
+            background: #b7a99c;
+            cursor: not-allowed;
+        }
+
+        /* Status */
+        .status-msg {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+        .status-msg.success {
+            display: block;
+            background: #e6f4ea;
+            color: #1e7e34;
+        }
+        .status-msg.error {
+            display: block;
+            background: #fce8e6;
+            color: #a50e0e;
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #a39284;
+            text-align: center;
+            border-top: 1px solid #ede7e1;
+            padding-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="app">
+        <!-- Header -->
+        <div class="header">
+            <h1>Nordeste <span>House</span></h1>
+            <span class="badge">✂️ Cliente</span>
+        </div>
+
+        <!-- Serviços -->
+        <div style="margin-bottom:8px; font-weight:600; color:#3d2c1e; font-size:14px;">ESCOLHA O SERVIÇO</div>
+        <div class="service-list" id="serviceList">
+            <!-- Preenchido via JS -->
+        </div>
+
+        <!-- Formulário -->
+        <div style="margin-bottom:8px; font-weight:600; color:#3d2c1e; font-size:14px;">AGENDAMENTO</div>
+        
+        <div class="form-group">
+            <label>📅 Dia</label>
+            <input type="date" id="inputData" min="">
+        </div>
+
+        <div class="form-group">
+            <label>⏰ Horário</label>
+            <select id="inputHorario">
+                <option value="">Selecione um horário</option>
+            </select>
+        </div>
+
+        <div class="row-duo">
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="inputNome" placeholder="Seu nome">
+            </div>
+            <div class="form-group">
+                <label>Sobrenome</label>
+                <input type="text" id="inputSobrenome" placeholder="Sobrenome">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>📱 WhatsApp (com DDD)</label>
+            <input type="tel" id="inputWhats" placeholder="(88) 99999-9999">
+        </div>
+
+        <button class="btn-agendar" id="btnAgendar">📨 Agendar e confirmar</button>
+        <div id="statusMsg" class="status-msg"></div>
+        <div class="footer-note">Você receberá uma confirmação no WhatsApp</div>
+    </div>
+
+    <script>
+        // ========== CONFIGURAÇÃO ==========
+        const CONFIG = {
+            horarioInicio: 9,  // 9:00
+            horarioFim: 18,    // 18:00
+            intervaloMin: 30,  // 30 minutos
+            diasSemanaAtivos: [1,2,3,4,5,6], // Seg=1, Dom=0 (desativado)
+        };
+
+        // Simulação de agendamentos já ocupados (para teste)
+        const ocupadosSimulados = [
+            { data: '2026-07-28', horario: '10:00' },
+            { data: '2026-07-28', horario: '10:30' },
+            { data: '2026-07-29', horario: '14:00' },
+        ];
+
+        // Catálogo de serviços
+        const servicos = [
+            { id: 1, nome: 'Corte Degradê', duracao: 30, preco: 45 },
+            { id: 2, nome: 'Barba Completa', duracao: 25, preco: 35 },
+            { id: 3, nome: 'Combo Corte + Barba', duracao: 50, preco: 70 },
+            { id: 4, nome: 'Platinado/Luzes', duracao: 90, preco: 120 },
+        ];
+
+        // ========== ESTADO DO APP ==========
+        let servicoSelecionado = null;
+        let horariosDisponiveis = [];
+
+        // ========== RENDER SERVIÇOS ==========
+        function renderServicos() {
+            const container = document.getElementById('serviceList');
+            container.innerHTML = '';
+            servicos.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'service-item';
+                div.dataset.id = s.id;
+                div.innerHTML = `
+                    <div class="service-info">
+                        <h3>${s.nome}</h3>
+                        <p>⏱ ${s.duracao}min</p>
+                    </div>
+                    <div class="service-price">R$ ${s.preco}</div>
+                `;
+                div.addEventListener('click', () => {
+                    document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                    servicoSelecionado = s;
+                    gerarHorarios(); // Recalcula horários ao mudar serviço
+                });
+                container.appendChild(div);
+            });
+        }
+
+        // ========== GERAR HORÁRIOS ==========
+        function gerarHorarios() {
+            const data = document.getElementById('inputData').value;
+            const select = document.getElementById('inputHorario');
+            select.innerHTML = '<option value="">Selecione um horário</option>';
+
+            if (!data || !servicoSelecionado) return;
+
+            const hoje = new Date();
+            const dataEscolhida = new Date(data + 'T00:00:00');
+            
+            // Valida dia da semana (0 = domingo)
+            if (dataEscolhida.getDay() === 0) {
+                document.getElementById('statusMsg').className = 'status-msg error';
+                document.getElementById('statusMsg').textContent = '❌ A barbearia não abre aos domingos!';
+                return;
+            }
+            if (dataEscolhida < hoje.setHours(0,0,0,0)) {
+                document.getElementById('statusMsg').className = 'status-msg error';
+                document.getElementById('statusMsg').textContent = '❌ Escolha uma data futura!';
+                return;
+            }
+
+            document.getElementById('statusMsg').className = 'status-msg';
+            document.getElementById('statusMsg').textContent = '';
+
+            const duracao = servicoSelecionado.duracao;
+            const slots = [];
+            let horaAtual = CONFIG.horarioInicio;
+
+            while (horaAtual < CONFIG.horarioFim) {
+                const horaStr = String(Math.floor(horaAtual)).padStart(2,'0');
+                const minuto = (horaAtual % 1) * 60;
+                const minutoStr = String(minuto).padStart(2,'0');
+                const horario = `${horaStr}:${minutoStr}`;
+
+                // Verifica se o horário + duração não ultrapassa o fim do expediente
+                const horaFimSlot = horaAtual + (duracao / 60);
+                if (horaFimSlot > CONFIG.horarioFim) break;
+
+                // Verifica se está ocupado (simulação)
+                const ocupado = ocupadosSimulados.some(o => o.data === data && o.horario === horario);
+                if (!ocupado) {
+                    slots.push(horario);
+                }
+
+                horaAtual += CONFIG.intervaloMin / 60;
+            }
+
+            horariosDisponiveis = slots;
+            slots.forEach(h => {
+                const opt = document.createElement('option');
+                opt.value = h;
+                opt.textContent = h;
+                select.appendChild(opt);
+            });
+
+            if (slots.length === 0) {
+                document.getElementById('statusMsg').className = 'status-msg error';
+                document.getElementById('statusMsg').textContent = '😕 Nenhum horário livre para este dia. Tente outra data.';
+            }
+        }
+
+        // ========== CONFIGURAR CALENDÁRIO ==========
+        function configurarCalendario() {
+            const input = document.getElementById('inputData');
+            const hoje = new Date().toISOString().split('T')[0];
+            input.setAttribute('min', hoje);
+
+            // Pré-seleciona amanhã se hoje for domingo
+            let dataInicial = new Date();
+            dataInicial.setDate(dataInicial.getDate() + 1);
+            if (dataInicial.getDay() === 0) dataInicial.setDate(dataInicial.getDate() + 1);
+            input.value = dataInicial.toISOString().split('T')[0];
+            
+            input.addEventListener('change', () => {
+                gerarHorarios();
+            });
+        }
+
+        // ========== ENVIAR AGENDAMENTO ==========
+        function enviarAgendamento() {
+            const nome = document.getElementById('inputNome').value.trim();
+            const sobrenome = document.getElementById('inputSobrenome').value.trim();
+            const whats = document.getElementById('inputWhats').value.trim();
+            const data = document.getElementById('inputData').value;
+            const horario = document.getElementById('inputHorario').value;
+            const msgStatus = document.getElementById('statusMsg');
+
+            if (!servicoSelecionado) {
+                msgStatus.className = 'status-msg error';
+                msgStatus.textContent = '⚠️ Selecione um serviço primeiro.';
+                return;
+            }
+            if (!nome || !sobrenome || !whats) {
+                msgStatus.className = 'status-msg error';
+                msgStatus.textContent = '⚠️ Preencha todos os dados.';
+                return;
+            }
+            if (!data || !horario) {
+                msgStatus.className = 'status-msg error';
+                msgStatus.textContent = '⚠️ Escolha uma data e horário.';
+                return;
+            }
+
+            // Limpa formatação do WhatsApp
+            const whatsLimpo = whats.replace(/\D/g, '');
+            if (whatsLimpo.length < 10) {
+                msgStatus.className = 'status-msg error';
+                msgStatus.textContent = '⚠️ Número de WhatsApp inválido.';
+                return;
+            }
+
+            // SIMULAÇÃO: Aqui salvamos no "banco" (localStorage) só para teste
+            const agendamento = {
+                servico: servicoSelecionado.nome,
+                nome, sobrenome, whats: whatsLimpo, data, horario,
+                timestamp: new Date().toISOString()
+            };
+
+            // Guarda no histórico do navegador (simulando banco)
+            const historico = JSON.parse(localStorage.getItem('agendamentos_nh') || '[]');
+            historico.push(agendamento);
+            localStorage.setItem('agendamentos_nh', JSON.stringify(historico));
+
+            // ========== MENSAGEM PARA O CLIENTE ==========
+            const msgCliente = `Olá ${nome}! ✅ Seu agendamento na *Nordeste House* foi confirmado!
+            ✂️ Serviço: ${servicoSelecionado.nome}
+            📅 Data: ${data} às ${horario}
+            Endereço: Rua da Barbearia, 123 - Centro.
+            Te esperamos! 🧔🏼`;
+
+            // ========== MENSAGEM PARA O ADMIN (VOCÊ) ==========
+            const msgAdmin = `🪒 *NOVO AGENDAMENTO!*
+            Cliente: ${nome} ${sobrenome}
+            WhatsApp: ${whatsLimpo}
+            Serviço: ${servicoSelecionado.nome}
+            Data: ${data} às ${horario}`;
+
+            // Abre o WhatsApp do CLIENTE (para ele enviar a confirmação ou só visualizar)
+            // Na prática, você usaria uma API. Aqui, abrimos a conversa já com a mensagem copiada.
+            const urlCliente = `https://wa.me/55${whatsLimpo}?text=${encodeURIComponent(msgCliente)}`;
+            
+            // Abre o WhatsApp do ADMIN (SEU NÚMERO) - Troque pelo seu número com DDD
+            const SEU_NUMERO = '558899999999'; // <-- COLOQUE SEU NÚMERO AQUI
+            const urlAdmin = `https://wa.me/55${SEU_NUMERO}?text=${encodeURIComponent(msgAdmin)}`;
+
+            // Abre as duas conversas (em abas separadas)
+            window.open(urlCliente, '_blank');
+            window.open(urlAdmin, '_blank');
+
+            // Feedback visual
+            msgStatus.className = 'status-msg success';
+            msgStatus.innerHTML = `✅ Agendado! Confirme no WhatsApp que acabamos de abrir. 
+            <br><small>Mensagens enviadas para você e para o cliente.</small>`;
+
+            // Limpa campos (opcional)
+            document.getElementById('inputNome').value = '';
+            document.getElementById('inputSobrenome').value = '';
+            document.getElementById('inputWhats').value = '';
+            document.getElementById('inputHorario').value = '';
+            document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
+            servicoSelecionado = null;
+            gerarHorarios();
+        }
+
+        // ========== INICIALIZAÇÃO ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            renderServicos();
+            configurarCalendario();
+            gerarHorarios(); // gera com a data pré-selecionada
+
+            document.getElementById('btnAgendar').addEventListener('click', enviarAgendamento);
+        });
+    </script>
+</body>
+</html>
